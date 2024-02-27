@@ -2,10 +2,12 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import bodyParser from 'body-parser';
 import express from 'express';
+import { prismaClient } from '../clients/database';
 
 export async function initServer() {
     const app = express();
     app.use(bodyParser.json());
+    
     const graphQLServer = new ApolloServer({
         typeDefs : `
             type Query {
