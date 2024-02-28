@@ -10,9 +10,13 @@ import { RiFileListLine } from "react-icons/ri";
 import { GrCurrency } from "react-icons/gr";
 import { CiUser } from "react-icons/ci";
 import { CiCircleMore } from "react-icons/ci";
-import React from "react";
+import React, { useCallback } from "react";
 import { link } from "fs";
 import FeedCard from "@/components/FeedCard";
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import toast from "react-hot-toast";
+import { graphQLClient } from "@/clients/api";
+import { verifyUserGoogleTokenQuery } from "../graphql/query/user";
 
 
 interface TwitterSidebarButton{
@@ -60,6 +64,29 @@ const sidebarMenuItems : TwitterSidebarButton[] = [
 ]
 
 export default function Home() {
+
+  const handleLoginWithGoogle = useCallback(async(credential : CredentialResponse) => {
+    const googleToken = credential.credential
+    if(!googleToken){
+      return toast.error(`Google token not found`);
+    }
+    try{
+      const { verifyGoogleToken } = await graphQLClient.request(verifyUserGoogleTokenQuery, {token: googleToken})
+      toast.success('login with google');
+      //console.log(verifyGoogleToken);
+      if(verifyGoogleToken)
+      {
+        window.localStorage.setItem('__twitter_token', verifyGoogleToken);
+      }
+    }catch(error){
+      console.error('Error verifying Google token:', error);
+      toast.error('Error verifying Google token');
+    }
+   
+  }, [])
+
+  
+
   return (
     <div>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
@@ -85,8 +112,16 @@ export default function Home() {
           <FeedCard/>
           <FeedCard/>
         </div>
-        <div className="col-span-3 pt-1">
-          col-3
+        <div className="col-span-3 p-5">
+          <div className="p-5 bg-slate-800 rounded-lg w-fit">
+            <GoogleLogin
+              onSuccess={handleLoginWithGoogle}
+              onError={() => {
+                console.log('Login Failed');
+              }}
+            />
+          </div>
+        
         </div>
       </div>
     </div>
