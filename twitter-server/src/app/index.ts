@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import { prismaClient } from '../clients/database';
 import { Users } from './users';
+import { Tweet } from './tweets';
 import { GraphQLContext } from '../interfaces';
 import JWTService from '../services/jwt';
 
@@ -16,15 +17,26 @@ export async function initServer() {
     const graphQLServer = new ApolloServer<GraphQLContext>({
         typeDefs : `
             ${Users.types}
+            ${Tweet.types}
             type Query {
-                ${Users.queries}
+                ${Users.queries},
+                ${Tweet.queries}
+            }
+
+            type Mutation {
+                ${Tweet.mutations}
             }
         `,
         resolvers : {
             Query: {
                ...Users.resolvers.queries,
-            }
-          
+               ...Tweet.resolvers.queries,
+            },
+            Mutation:{
+                ...Tweet.resolvers.mutations,
+            },
+            ...Tweet.resolvers.extraResolvers,
+            ...Users.resolvers.extraResolvers,
         },
       });
 await graphQLServer.start();

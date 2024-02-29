@@ -22,4 +22,19 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+//one user can have many tweets
+  tweets Tweet[]
+}
+
+model Tweet{
+  id String @id @default(cuid())
+  content String
+  imageUrl String?
+
+//A tweet must have a user
+  author User @relation(fields: [authorId], references: [id])
+  authorId String 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
