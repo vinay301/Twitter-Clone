@@ -19,6 +19,7 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const express_1 = __importDefault(require("express"));
 const users_1 = require("./users");
+const jwt_1 = __importDefault(require("../services/jwt"));
 function initServer() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = (0, express_1.default)();
@@ -36,7 +37,11 @@ function initServer() {
             },
         });
         yield graphQLServer.start();
-        app.use('/graphql', (0, express4_1.expressMiddleware)(graphQLServer));
+        app.use('/graphql', (0, express4_1.expressMiddleware)(graphQLServer, { context: ({ req, res }) => __awaiter(this, void 0, void 0, function* () {
+                return {
+                    user: req.headers.authorization ? jwt_1.default.decryptToken(req.headers.authorization.split("Bearer ")[1]) : undefined
+                };
+            }) }));
         return app;
     });
 }
