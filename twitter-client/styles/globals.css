@@ -36,3 +36,7 @@ body {
     text-wrap: balance;
   }
 }
+
+*:focus {
+  outline:none;
+}

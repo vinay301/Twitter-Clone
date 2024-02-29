@@ -10,7 +10,8 @@ import { RiFileListLine } from "react-icons/ri";
 import { GrCurrency } from "react-icons/gr";
 import { CiUser } from "react-icons/ci";
 import { CiCircleMore } from "react-icons/ci";
-import React, { useCallback } from "react";
+import { PiImageSquare } from "react-icons/pi";
+import React, { useCallback, useState } from "react";
 import { link } from "fs";
 import FeedCard from "@/components/FeedCard";
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
@@ -19,6 +20,8 @@ import { graphQLClient } from "@/clients/api";
 import { verifyUserGoogleTokenQuery } from "../graphql/query/user";
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
+import { Tweet } from "@/gql/graphql";
 
 
 interface TwitterSidebarButton{
@@ -68,8 +71,24 @@ const sidebarMenuItems : TwitterSidebarButton[] = [
 export default function Home() {
 
   const { user } = useCurrentUser();
+  const { tweets=[] } = useGetAllTweets();
   const queryClient = useQueryClient();
-  console.log(user);
+  const { mutate } = useCreateTweet();
+  //console.log(user);
+  const [content,setContent] = useState('')
+
+  const handleCreateTweet = useCallback(() => {
+    mutate({
+      content,
+    })
+  },[content, mutate])
+
+  const handleImageSelector = useCallback(() => {
+    const input = document.createElement('input');
+    input.setAttribute('type','file');
+    input.setAttribute('accept','image/*')
+    input.click();
+  },[])
 
   const handleLoginWithGoogle = useCallback(async(credential : CredentialResponse) => {
     const googleToken = credential.credential
@@ -124,10 +143,27 @@ export default function Home() {
           )}
         </div>
         <div className="col-span-6 border-r-[1px] border-l-[1px] border-gray-600 pt-1 h-screen overflow-scroll">
-          <FeedCard/>
-          <FeedCard/>
-          <FeedCard/>
-          <FeedCard/>
+          <div>
+            <div className='border border-r-0 border-l-0 border-b-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer'>
+              <div className="grid grid-cols-12 gap-3">
+                <div className='col-span-1'>
+                   {user?.profileImageUrl && <Image src={user?.profileImageUrl} alt='userAvatar' width={40} height={40} className='rounded-full'/>}
+                </div>
+                <div className="col-span-11">
+                  <textarea value={content} onChange={e => setContent(e.target.value)} className="w-full bg-transparent px-3 border-b border-slate-700" rows={4} placeholder="What's happening?" ></textarea>
+                  <div className="mt-2 flex justify-between items-center">
+                    <PiImageSquare onClick={handleImageSelector} className="text-xl"/>
+                    <button onClick={handleCreateTweet} className="bg-[#1d9bf0] font-semibold text-sm py-2 px-4 rounded-full">Tweet</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {
+            tweets?.map(tweet => tweet? <FeedCard key={tweet?.id} data={tweet as Tweet}/> : null)
+          }
+         
+      
         </div>
         <div className="col-span-3 p-5">
           { !user && (<div className="p-5 bg-slate-800 rounded-lg w-fit">
