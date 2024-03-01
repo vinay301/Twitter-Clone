@@ -25,6 +25,9 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
                 <div className="col-span-11 pl-3">
                     <Link href={`/${data.author?.id}`}>{data.author?.firstName} {data.author?.lastName}</Link>
                     <p>{data.content}</p>
+                    {
+                        data.imageUrl && <Image src={data.imageUrl} alt="TweetImage" height={400} width={400}/>
+                    }
                     <div className='flex justify-between mt-5 items-center text-xl p-2 w-[90%]'>
                         <div>
                         <TbMessageCircle2 />
