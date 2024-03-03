@@ -18,6 +18,7 @@ import { graphQLClient } from "@/clients/api";
 import { verifyUserGoogleTokenQuery } from "../../graphql/query/user";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { DiVim } from "react-icons/di";
 
 interface TwitterLayoutProps {
     children : React.ReactNode
@@ -145,20 +146,33 @@ const TwitterLayout:React.FC<TwitterLayoutProps> = (props) => {
           )}
         </div>
 
-        <div className="col-span-10 sm:col-span-6 border-r-[1px] border-l-[1px] border-gray-600 pt-1 h-screen overflow-scroll">
+        <div className="col-span-10 sm:col-span-6 border-r-[1px] border-l-[1px] border-gray-800 pt-1 h-screen overflow-scroll">
           {props.children}
         </div>
 
         <div className="col-span-0 sm:col-span-3 p-5">
-          { !user && (<div className="p-5 bg-slate-800 rounded-lg w-fit">
+          { !user ? (<div className="p-5 bg-slate-800 rounded-lg w-fit">
             <GoogleLogin
               onSuccess={handleLoginWithGoogle}
               onError={() => {
                 console.log('Login Failed');
               }}
             />
-          </div>)}
-        
+          </div>) : 
+          <div className="px-4 py-3 bg-slate-800 rounded-lg w-fit">
+            <h1 className="my-2 text-lg mb-5">Users you may know</h1>
+             {
+              user?.recommendedUsers?.map(e=> 
+              <div key={e?.id} className="flex items-center gap-3 mt-2">
+                {e?.profileImageUrl && <Image src={e?.profileImageUrl} alt="user-image" height={60} width={60} className="rounded-full"/>}
+                <div className="text-center flex">
+                  <div>{e?.firstName} {e?.lastName}</div>
+                  <Link href={`/${e?.id}`} className="bg-white text-black text-sm px-5 py-1 rounded-full w-full">View</Link>
+                </div>
+              </div>)
+              }
+          </div>} 
+       
         </div>
       </div>
     </div>
