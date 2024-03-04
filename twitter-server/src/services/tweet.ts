@@ -4,6 +4,7 @@ export interface CreateTweetPayload{
     content: string
     imageUrl?: string
     userId: string
+    id:string
 }
 
 class TweetService{
@@ -20,6 +21,16 @@ class TweetService{
     public static getAllTweets(){
         return prismaClient.tweet.findMany({orderBy: {createdAt:'desc'}})
     }
+
+    // public static likeTweet(tweetId: string, userId: string) {
+    //     return prismaClient.likedTweet.create({
+    //       data: {
+    //         tweet: { connect: { id: tweetId } },
+    //         user: { connect: { id: userId } },
+    //       },
+    //     });
+    //   }
+
 }
 
 export default TweetService;

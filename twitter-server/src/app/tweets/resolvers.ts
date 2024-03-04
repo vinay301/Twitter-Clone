@@ -51,7 +51,9 @@ const mutations = {
             throw new Error("Error creating the Tweet")
         }
         
-    }
+    },
+
+  
 };
 
 const extraResolvers = {
