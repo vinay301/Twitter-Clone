@@ -36,15 +36,18 @@ class LikedTweetService {
         },
       });
 
-      // Update the likes count in the tweet entity (assuming you have a likes field in the Tweet model)
-    //   await prismaClient.tweet.update({
-    //     where: { id: tweet.id },
-    //     data: {
-    //       likes: {
-    //         increment: 1,
-    //       },
-    //     },
-    //   });
+      
+     
+        if(tweet){
+            //Update the likes count in the tweet entity (assuming you have a likes field in the Tweet model)
+            await prismaClient.tweet.update({
+                where: { id: tweet.id },
+                data: {
+                likes: tweet.likes + 1
+                },
+            });
+        }
+    
     } catch (error) {
       console.error('Error liking tweet:', error);
       throw new Error('Failed to like the tweet');

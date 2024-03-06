@@ -1,10 +1,11 @@
+import { GraphQLContext } from "../../interfaces";
 import likedTweet from "../../services/likedTweet";
 import TweetService from "../../services/tweet";
 
 
 const likedTweetResolvers = {
   mutations: {
-    likeTweet: async (parent:any, {userId,tweetId}:{ userId:string, tweetId:string }) => {
+    likeTweet: async (parent:any, {userId,tweetId}:{ userId:string, tweetId:string }, context:GraphQLContext) => {
       try {
         await likedTweet.likeTweet(tweetId, userId);
         return true;

@@ -52,7 +52,8 @@ model Tweet {
   author   User   @relation(fields: [authorId], references: [id])
   authorId String
 
-  likes LikedTweet[] 
+  likes Int @default(0)
+  likedTweet LikedTweet[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
