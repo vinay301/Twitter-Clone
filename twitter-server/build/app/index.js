@@ -32,10 +32,11 @@ function initServer() {
             
             ${users_1.Users.types}
             ${tweets_1.Tweet.types}
-          
+            ${likedTweets_1.LikedTweet.types}
             type Query {
                 ${users_1.Users.queries},
-                ${tweets_1.Tweet.queries}
+                ${tweets_1.Tweet.queries},
+                ${likedTweets_1.LikedTweet.queries},
             }
 
             type Mutation {
@@ -44,7 +45,7 @@ function initServer() {
                ${likedTweets_1.LikedTweet.mutations}
             }
         `,
-            resolvers: Object.assign(Object.assign({ Query: Object.assign(Object.assign({}, users_1.Users.resolvers.queries), tweets_1.Tweet.resolvers.queries), Mutation: Object.assign(Object.assign(Object.assign({}, tweets_1.Tweet.resolvers.mutations), users_1.Users.resolvers.mutations), likedTweets_1.LikedTweet.resolvers.mutations) }, tweets_1.Tweet.resolvers.extraResolvers), users_1.Users.resolvers.extraResolvers),
+            resolvers: Object.assign(Object.assign({ Query: Object.assign(Object.assign(Object.assign({}, users_1.Users.resolvers.queries), tweets_1.Tweet.resolvers.queries), likedTweets_1.LikedTweet.resolvers.queries), Mutation: Object.assign(Object.assign(Object.assign({}, tweets_1.Tweet.resolvers.mutations), users_1.Users.resolvers.mutations), likedTweets_1.LikedTweet.resolvers.mutations) }, tweets_1.Tweet.resolvers.extraResolvers), users_1.Users.resolvers.extraResolvers),
         });
         yield graphQLServer.start();
         app.use('/graphql', (0, express4_1.expressMiddleware)(graphQLServer, { context: ({ req, res }) => __awaiter(this, void 0, void 0, function* () {

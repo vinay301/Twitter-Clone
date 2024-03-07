@@ -5,6 +5,7 @@ import { S3Client,PutObjectCommand} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import UserService from "../../services/user";
 import TweetService, { CreateTweetPayload } from "../../services/tweet";
+import likedTweet from "../../services/likedTweet";
 
 
 const s3Client = new S3Client({
@@ -13,6 +14,7 @@ const s3Client = new S3Client({
 
 const queries = {
     getAllTweets: () => TweetService.getAllTweets(),
+    getTweetById:  async (parent:any , {id}:{id:string}, ctx:GraphQLContext) => TweetService.getTweetById(id),
     getSignedURLForTweet: async(parent:any, {imageType, imageName}:{imageType:string, imageName:string}, context:GraphQLContext) => {
         if(!context.user || !context.user.id)
         {
@@ -59,6 +61,7 @@ const mutations = {
 const extraResolvers = {
     Tweet: {
         author: (parent:Tweet) =>UserService.getUserById(parent.authorId),
+        likedTweet: (parent:Tweet) => likedTweet.likeTweet(parent.id,parent.authorId),
     }
 }
 

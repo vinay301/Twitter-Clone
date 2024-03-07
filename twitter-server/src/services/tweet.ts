@@ -22,7 +22,10 @@ class TweetService{
         return prismaClient.tweet.findMany({orderBy: {createdAt:'desc'}})
     }
 
-
+    // Get tweet by id
+    public static async getTweetById(id:string){
+        return await prismaClient.tweet.findUnique( { where : { id}} )
+    }
 
 }
 

@@ -1,4 +1,6 @@
 export const types = `#graphql
+    scalar DateTime
+    
     type LikedTweet {
     tweetId: String
     likedAt: DateTime

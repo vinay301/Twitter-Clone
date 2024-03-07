@@ -5,13 +5,12 @@ export const types = `#graphql
         imageUrl: String
     }
 
-
     type Tweet {
         id: ID!
         content: String!
         imageUrl: String
         author: User
-        
+        likedTweet: LikedTweet
         likes: Int
     }
 `

@@ -28,7 +28,7 @@ model User {
   //one user can have many tweets
   tweets    Tweet[]
  
-  likedTweets LikedTweet[] 
+  likedTweet LikedTweet[] 
 
 }
 
@@ -67,4 +67,5 @@ model LikedTweet {
   user       User       @relation(fields: [userId], references: [id])
   
   @@id([tweetId, userId])
+
 }
