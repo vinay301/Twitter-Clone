@@ -5,13 +5,14 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/user";
 import FeedCard from "@/components/FeedCard";
-import { Tweet, User } from "@/gql/graphql";
+import { LikedTweet, Tweet, User } from "@/gql/graphql";
 import { graphQLClient } from "@/clients/api";
 import { getUserByIdQuery } from "@/graphql/query/user";
 import { useCallback, useMemo } from "react";
 import { followUserMutation, unFollowUserMutation } from "@/graphql/mutation/user";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { GetLikedTweetById } from "@/graphql/query/likedTweet";
 
 interface ServerProps{
     userInfo?: User
@@ -78,7 +79,7 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
                        
                     </div>
                     <div>
-                        {props.userInfo?.tweets?.map(tweet => <FeedCard data={tweet as Tweet} key={tweet?.id} />)}
+                        {props.userInfo?.tweets?.map(tweet => <FeedCard data={tweet as Tweet}  key={tweet?.id} />)}
                     </div>
                 </div>
             </TwitterLayout>

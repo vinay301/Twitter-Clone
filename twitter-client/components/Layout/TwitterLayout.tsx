@@ -160,7 +160,7 @@ const TwitterLayout:React.FC<TwitterLayoutProps> = (props) => {
             />
           </div>) : 
           <div className="px-4 py-3 bg-slate-800 rounded-lg w-fit">
-            <h1 className="my-2 text-lg mb-5">Users you may know</h1>
+            <h1 className="my-2 text-lg mb-5 font-bold">Who to follow</h1>
              {
               user?.recommendedUsers?.map(e=> 
               <div key={e?.id} className="flex items-center gap-3 mt-2">
