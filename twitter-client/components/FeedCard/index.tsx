@@ -26,22 +26,33 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
     const { data} = props
     const {user:currentUser} = useCurrentUser();
     const queryClient = useQueryClient();
-    const [isLiked, setLiked] = useState(false);
+    const isLikedByCurrentUser = Array.isArray(data.likes) && data.likes.some(like => like.userId === currentUser?.id);
+    const [isLiked, setLiked] = useState<boolean>(isLikedByCurrentUser);
+    // const [isLiked, setLiked] = useState<boolean>(data.likes ? data.likes > 0 : false);
 
    
 
     const handleLikeTweet = useCallback(async ()=>{
         if(!props.data?.id || !currentUser)return;
         try{
+            console.log(isLiked);
             if(isLiked){
                 try{
-                    await  graphQLClient.request(UnLikeTweetMutation, {tweetId: data.id, userId: currentUser.id})
-                    toast.success(`You unliked the tweet`);
-                    await  queryClient.invalidateQueries({queryKey: ["unlike-tweet"]})
-                    setLiked(false);
+                    console.log(isLiked);
+                    console.log(currentUser.id);
+                    console.log(data.author?.id)
+                    if (currentUser.id === data.author?.id)
+                    {
+                        await  graphQLClient.request(UnLikeTweetMutation, {tweetId: data.id, userId: currentUser.id})
+                        toast.success(`You unliked the tweet`);
+                        await  queryClient.invalidateQueries({queryKey: ["unlike-tweet"]})
+                        setLiked(false);
+                    }
+                   
                 }catch(error){
                     console.log(error);
-                    toast.error('Failed to unlike the tweet');
+                    //toast.error('Failed to unlike the tweet');
+                    toast.error(`You can't unlike a tweet you didn't post`);
                 }
                
             }else{
@@ -52,6 +63,7 @@ const FeedCard : React.FC<FeedCardProps> = (props) => {
                     setLiked(true);
                 }catch(err){
                     console.log(err);
+                    
                     toast.error('Failed to like the tweet');
                 }
             }
